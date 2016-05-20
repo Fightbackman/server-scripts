@@ -1,6 +1,6 @@
 #!/bin/bash
 
-confiname=$1
+configname=$1
 web_service='nginx'
 config_file="/etc/letsencrypt/configs/$configname"
 
