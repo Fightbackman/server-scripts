@@ -7,7 +7,6 @@ config_file=$3
 le_path='/opt/certboot'
 
 if [ ! -f $config_file ]; then
-config_file="/etc/letsencrypt/configs/$configname"
 echo "Config file does not exist"
 exit 1;
 fi

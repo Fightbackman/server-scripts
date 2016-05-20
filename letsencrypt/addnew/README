@@ -1,0 +1,8 @@
+#newdomain
+This script add a new domain to an existing letsencrypt config file and renew the existing certificate
+with the new domain added to it.
+#parameters:
+$1 = configname
+$2 = name of new domain
+$3 = path to alternative config save folder. !doesn't work for now
+$4 = name of web_service 
