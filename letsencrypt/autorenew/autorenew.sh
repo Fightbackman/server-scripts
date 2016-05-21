@@ -3,6 +3,7 @@
 configname=$1
 web_service='nginx'
 config_file="/etc/letsencrypt/configs/$configname"
+webroot=/home/nginx/sites/letsencrypt/
 
 echo $config_file
 
@@ -32,7 +33,7 @@ if [ "$days_exp" -gt "$exp_limit" ] ; then
         exit 0;
 else
         echo "The certificate for $domain is about to expire soon. Starting webroot renewal script..."
-        $le_path/certbot-auto certonly --agree-tos --renew-by-default --config $config_file
+        $le_path/certbot-auto certonly --agree-tos --renew-by-default --webroot --webroot-path $webroot --config $config_file
         echo "Reloading $web_service"
         /usr/sbin/service $web_service reload
         echo "Renewal process finished for domain $domain"

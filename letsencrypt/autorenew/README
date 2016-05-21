@@ -30,11 +30,11 @@ rsa-key-size = 4096
 
 # Uncomment to use the webroot authenticator. Replace webroot-path with the
 # path to the public_html / webroot folder being served by your web server.
- authenticator = webroot
- webroot-path = /home/nginx/sites/letsencrypt/
+# authenticator = webroot
+# webroot-path = /home/nginx/sites/letsencrypt/
 
 ```
 
 Die Dateien sollten hierbei in der Regel den Namen der Hauptdomain des Zertifikats tragen und haben optional die Endung .ini
-Der webroot-path ist hierbei an den wirklichen Webroot des zugehörigenb Webservers anzupassen.
+Der webroot-path wird im autorenew script definiert. Zu beachten ist hier, dass alle domains sich ein webroot für letsencrypt teilen.
 Genaueres kann man hier der letsencrypt bzw der certbot Dokumentation zu entnehmen.
