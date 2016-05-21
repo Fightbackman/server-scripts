@@ -18,7 +18,7 @@ mv $config_file.tmp $config_file
 echo "Shutdown of $web_service"
 /usr/sbin/service $web_service stop
 echo "Aquiring new certificate"
-$le_path/letsencrypt-auto certonly --agree-tos --renew-by-default --standalone --config $config_file
+$le_path/certbot-auto certonly --agree-tos --renew-by-default --standalone --config $config_file
 echo "Aquiring for $newdomain was successfull."
 echo "Restarting $web_service"
 exit 0;
