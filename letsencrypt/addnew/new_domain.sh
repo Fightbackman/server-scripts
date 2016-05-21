@@ -4,7 +4,7 @@ configname=$1
 newdomain=$2
 web_service='nginx'
 config_file=$3
-le_path='/opt/certboot'
+le_path='/opt/certbot'
 
 if [ ! -f $config_file ]; then
 echo "Config file does not exist"
