@@ -21,4 +21,5 @@ echo "Aquiring new certificate"
 $le_path/certbot-auto certonly --agree-tos --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --config $config_file
 echo "Aquiring for $newdomain was successfull."
 echo "Restarting $web_service"
+/usr/sbin/service $web_service start
 exit 0;
