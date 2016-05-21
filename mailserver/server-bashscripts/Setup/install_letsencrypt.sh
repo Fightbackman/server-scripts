@@ -8,5 +8,4 @@ sudo apt-get update;
 sudo apt-get upgrade;
 sudo apt-get install git;
 cd /opt/;
-sudo git clone https://github.com/letsencrypt/letsencrypt;'
-
+sudo git clone https://github.com/certbot/certbot;'
