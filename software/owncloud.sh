@@ -1,0 +1,25 @@
+#!/bin/bash
+USER=$1;
+IP=$2;
+
+ssh -t $USER@$IP '
+  wget -nv https://download.owncloud.org/download/repositories/stable/Debian_8.0/Release.key -O Release.key
+  sudo apt-key add - < Release.key;
+  sudo echo "deb http://download.owncloud.org/download/repositories/stable/Debian_8.0/ /" >> /etc/apt/sources.list.d/owncloud.list;
+  sudo apt-get update;
+  sudo apt-get install owncloud;';
+
+#nginx config for owncloud
+
+#mysql create user and tables
+read -s -p 'Enter Password of Owncloud Mysql User: ' mypassword ;
+ssh -t $USER@$IP "
+echo \"CREATE USER 'owncloud'@'localhost' IDENTIFIED BY '\"'$mypassword'\"';\" > create.sql;
+echo \"CREATE DATABASE owncloud;\" >> create.sql;
+echo \"GRANT ALL PRIVILEGES ON owncloud.* TO 'owncloud'@'localhost';\" >> create.sql;
+echo \"FLUSH PRIVILEGES;\" >> create.sql;
+mysql -u root -p < create.sql;
+rm create.sql;
+"
+
+#open browser and configure
