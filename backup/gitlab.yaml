@@ -1,0 +1,15 @@
+hashfilePath: !!str "backups/hashes/gitlab.hash"
+
+target:
+  data:
+    - !!str "/etc/gitlab/" #conf
+
+ops:
+  data:
+    - sudo mkdir /opt/backups/gitlab/
+    - sudo mkdir /opt/backups/gitlab/conf/
+    - sudo mkdir /opt/backups/gitlab/data/
+    - sudo sh -c 'umask 0077; tar -cf $(date "+etc-gitlab-%s.tar") -C / etc/gitlab'
+    - mv $(date "+etc-gitlab-%s.tar") /opt/backups/gitlab/conf/
+    - sudo gitlab-rake gitlab:backup:create
+    - sudo mv /var/opt/gitlab/backups/* /opt/backups/gitlab/data/

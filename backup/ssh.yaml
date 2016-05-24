@@ -1,0 +1,9 @@
+hashfilePath: !!str "backups/hashes/ssh.hash"
+
+target:
+  data:
+    - !!str "/etc/ssh/" #keys
+
+ops:
+  data:
+  - sudo sh -c 'umask 0077; tar -cf $(date "+etc-gitlab-%s.tar") -C /opt/backups/gitlab etc/gitlab'

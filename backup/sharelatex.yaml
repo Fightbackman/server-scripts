@@ -1,0 +1,22 @@
+hashfilePath: !!str "backups/hashes/sharelatex.hash"
+
+target:
+  data:
+    - !!str "/opt/sharelatex_data"
+
+ops:
+  data:
+    - sudo sh -c 'umask 0077; tar -cf $(date "+etc-sharelatex-%s.tar") -C /opt/backups/sharelatex /opt/sharelatex_data'
+  redis:
+    - redis-cli -h 172.17.42.1 save
+    - sudo cp dump.rdb /opt/backups/sharelatex/dump.rdb
+  mongodb:
+    - sudo docker stop sharelatex
+    - cd /opt/backups/sharelatex/mongodb/
+    - sudo mongodump -h 172.17.42.1 -p 27017
+    - sudo docker start sharelatex
+
+
+# - sudo sh -c 'umask 0077; tar -cf $(date "+etc-sharelatex-%s.tar") -C /opt/backups/sharelatex /opt/sharelatex_data'
+# - #redis https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
+# - #mogo https://github.com/sharelatex/sharelatex/wiki/Backup-of-Data

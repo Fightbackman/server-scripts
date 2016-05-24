@@ -1,0 +1,14 @@
+hashfilePath: !!str "backups/hashes/apache.hash"
+
+#data will be ziped
+target:
+  data:
+    - !!str "/etc/apache2/"
+    - !!str "/var/www/"
+  exclude:
+    - "/var/www/owncloud/"
+
+ops:
+  data:
+    - dfa
+    - adfsds
