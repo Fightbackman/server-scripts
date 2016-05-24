@@ -1,5 +1,5 @@
 # server-scripts
-Scripts from my everyday serverwork.
+Scripts from our everyday serverwork.
 
 # List of current storred scripts:
 ### Format: Scriptname: Short discription
