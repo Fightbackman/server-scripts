@@ -15,7 +15,7 @@ read;
 # letsencrypt
 # ===================
 
-./install_letsencrypt.sh $IP $USER;
+../../../software/install_letsencrypt.sh $IP $USER;
 
 echo "NGINX";
 read;
