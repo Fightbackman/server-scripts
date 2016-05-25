@@ -11,18 +11,19 @@ ssh -t $USER@$IP '
   sudo apt-get install nginx;
   sudo apt-get install php5-fpm;
   sudo service nginx start;
-  sudo service php5-fpm restart;'
+  sudo service php5-fpm restart;';
 
 #configure nginx
-scp -r ../configs/nginx-configs/ $USER@$IP:~/;
-rm -rf nginx-configs/;
+scp -r ../configs/nginx-config/ $USER@$IP:~/;
 
 ../general-purpose/diffie-hellman.sh $USER $IP;
 
 #customization needed
 ssh -t $USER@$IP "
   sudo rm -rf ~/etc/nginx/*;
-  sudo mv ~/nginx-configs/* /etc/nginx/;
+  sudo cp -r ~/nginx-config/* /etc/nginx/;
+  sudo rm -rf ~/nginx-config/;
+  sudo chown -R root:root /etc/nginx;
   sudo rm -rf /var/www;
   sudo ln -s /usr/share/nginx/ /var/www;
   sudo mkdir /var/www/html/$DOMAIN/;

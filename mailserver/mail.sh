@@ -1,6 +1,7 @@
 #!/bin/bash
 USER=$1;
-IP=$2;
+IP=$2
+DOMAIN=$3;
 
 if [ $(echo $@ | grep -o "complete") == 'complete' ]; then
   ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot dovecot-conf roundcube roundcube-conf phpmyadmin mail-db mailmanager spamassassin debian-bugfix";
@@ -21,7 +22,7 @@ fi;
 if [ $(echo $ARGS | grep -o "letsencrypt") == 'letsencrypt' ]; then
   echo "letsencrypt";
   read;
-  ../software/letsencrypt.sh $USER $IP;
+  ../software/install_letsencrypt.sh $USER $IP;
 fi;
 
 # NGINX
@@ -30,7 +31,7 @@ fi;
 if [ $(echo $ARGS | grep -o "nginx") == 'nginx' ]; then
   echo "NGINX";
   read;
-  ../software/nginx.sh $USER $IP;
+  ../software/nginx.sh $USER $IP $DOMAIN;
 fi;
 
 # Mysql Server
@@ -41,7 +42,7 @@ if [ $(echo $ARGS | grep -o "mysql-server") == 'mysql-server' ]; then
   ../software/mysql-server.sh $USER $IP;
 fi;
 
-# Postfix and SpamAssassin
+# Postfix
 # ===============================
 if [ $(echo $ARGS | grep -o "postfix-bin") == 'postfix-bin' ]; then
   echo "POSTFIX";
@@ -71,15 +72,15 @@ fi;
 # Roundcube
 # ===============================
 if [ $(echo $ARGS | grep -o "roundcube") == 'roundcube' ]; then
-  echo "ROUNDCUBE";
+  echo "ROUNDCUBE this will harm your apache2!!!";
   read;
   ssh -t $USER@$IP '
-    echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list;
-    apt-get update;
-    apt-get install roundcube roundcube-plugins;
-    service apache2 stop;
-    apt-get purge apache2;
-    apt-get autoremove;';
+    sudo su -c "echo \"deb http://http.debian.net/debian jessie-backports main\" > /etc/apt/sources.list.d/jessie-backports.list";
+    sudo apt-get update;
+    sudo apt-get install roundcube roundcube-plugins;
+    sudo service apache2 stop;
+    sudo apt-get purge apache2;
+    sudo apt-get autoremove;';
 fi;
 
 # phpmyadmin
@@ -88,8 +89,8 @@ if [ $(echo $ARGS | grep -o "phpmyadmin") == 'phpmyadmin' ]; then
   echo "phpmyadmin";
   read;
   ssh -t $USER@$IP '
-    apt-get install phpmyadmin;
-    ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin;
+    sudo apt-get install phpmyadmin;
+    sudo ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin;
   ';
 fi;
 
@@ -137,7 +138,7 @@ fi;
 if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
   read;
-  cp -r ../configs/postfix-conf ./;
+  cp -r ../configs/postfix-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
@@ -168,7 +169,7 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
     sudo chown -R vmail.vmail /var/vmail;';
 
   ssh -t $USER@$IP 'rm -rf /etc/dovecot/*;';
-  cp -r ../configs/dovecot-conf ./;
+  cp -r ../configs/dovecot-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
@@ -197,16 +198,19 @@ fi;
 if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
   read;
-  cp -r ../configs/roundcube-conf ./;
+  cp -r ../configs/roundcube-conf .;
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
   read -p 'Enter Database password for Roundcube: ' mypassword;
   sed -i -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
   #generate $des_key
   sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
-  scp -r roundcube-conf/* $USER@$IP:/etc/roundcube/;
+  scp -r roundcube-conf $USER@$IP:~/;
   rm -rf roundcube-conf;
   ssh -t $USER@$IP '
+    rm -rf /etc/roundcube/*;
+    sudo cp -r ~/roundcube-conf/* /etc/roundcube/;
+    rm -rf ~/roundcube-conf;
     sudo ln -s /usr/share/roundcube/ /var/www/html/roundcube;';
 fi;
 
@@ -233,7 +237,7 @@ if [ $(echo $ARGS | grep -o "debian-bugfix") == 'debian-bugfix' ]; then
   echo "DEBIAN BUG FIX";
   read;
   ssh -t $USER@$IP '
-    sed -i -e "s/return if !defined $_[0];/return undef if !defined $_[0];/g" /usr/share/perl5/Mail/SpamAssassin/Util.pm;';
+    sudo sed -i -e "s/return if !defined $_[0];/return undef if !defined $_[0];/g" /usr/share/perl5/Mail/SpamAssassin/Util.pm;';
 fi;
 
 # Enable spamassassin
@@ -242,18 +246,19 @@ if [ $(echo $ARGS | grep -o "spamassassin") == 'spamassassin' ]; then
   echo "ENABLE SPAMASSASSIN";
   read;
 
-  ssh -t $USER@$IP '
+  ssh -t $USER@$IP "
   sudo postconf smtpd_milters=unix:/spamass/spamass.sock;
-  sudo postconf milter_connect_macros="i j {daemon_name} v {if_name} _";
+  sudo postconf milter_connect_macros='i j {daemon_name} v {if_name} _';
   sudo cp /etc/default/spamassassin ~/;
-  sudo chown ~/spamassassin';
+  sudo chown -R $USER:$USER ~/spamassassin";
+
   scp $USER@$IP:~/spamassassin . ;
   sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
   sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
   scp spamassassin $USER@$IP:~/;
   rm spamassassin*;
   ssh -t $USER@$IP '
-  sudo mv -r ~/spamassassin /etc/default/spamassassin;
+  sudo mv ~/spamassassin /etc/default/spamassassin;
   sudo systemctl enable spamassassin;
   sudo adduser spamass-milter debian-spamd;
   sudo service spamassassin restart;
