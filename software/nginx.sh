@@ -1,6 +1,7 @@
 #!/bin/bash
 USER=$1;
 IP=$2;
+DOMAIN=$3;
 
 #install nginx
 ssh -t $USER@$IP '
@@ -19,14 +20,14 @@ rm -rf nginx-configs/;
 ./diffie-hellman.sh $USER $IP;
 
 #customization needed
-ssh -t $USER@$IP '
+ssh -t $USER@$IP "
   sudo rm -rf ~/etc/nginx/*;
   sudo mv ~/nginx-configs/* /etc/nginx/;
   sudo rm -rf /var/www;
   sudo ln -s /usr/share/nginx/ /var/www;
-  sudo mkdir /var/www/html/site/; #for site config
+  sudo mkdir /var/www/html/$DOMAIN/;
   sudo service nginx stop;
-  #/opt/certbot/certbot-auto certonly --test-cert -d site.de;';
+  /opt/certbot/certbot-auto certonly --test-cert -d $DOMAIN;";
 
 # error because dhmparams is not in place (of course)
 # ssh -t $USER@$IP 'sudo service nginx start';
