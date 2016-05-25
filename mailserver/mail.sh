@@ -2,7 +2,7 @@
 USER=$1;
 IP=$2;
 
-if [ $(echo $@ | grep -o "complete") = 'complete' ]; then
+if [ $(echo $@ | grep -o "complete") == 'complete' ]; then
   ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot dovecot-conf roundcube roundcube-conf phpmyadmin mail-db mailmanager spamassassin debian-bugfix";
 else
   ARGS=$@;
@@ -137,7 +137,7 @@ fi;
 if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
   read;
-  git clone git@gitlab.shrlck.de:team/postfix-conf.git;
+  cp -r ../configs/postfix-conf ./;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
@@ -168,7 +168,7 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
     sudo chown -R vmail.vmail /var/vmail;';
 
   ssh -t $USER@$IP 'rm -rf /etc/dovecot/*;';
-  git clone git@gitlab.shrlck.de:team/dovecot-conf.git;
+  cp -r ../configs/dovecot-conf ./;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
@@ -197,7 +197,7 @@ fi;
 if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
   read;
-  git clone git@gitlab.shrlck.de:team/roundcube-conf.git;
+  cp -r ../configs/roundcube-conf ./;
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
   scp -r roundcube-conf/* $USER@$IP:/etc/roundcube/;
