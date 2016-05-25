@@ -17,7 +17,7 @@ ssh -t $USER@$IP '
 scp -r ../configs/nginx-configs/ $USER@$IP:~/;
 rm -rf nginx-configs/;
 
-./diffie-hellman.sh $USER $IP;
+../general-purpose/diffie-hellman.sh $USER $IP;
 
 #customization needed
 ssh -t $USER@$IP "
