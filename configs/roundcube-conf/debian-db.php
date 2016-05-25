@@ -11,7 +11,7 @@
 ## above too.
 ##
 $dbuser='roundcube';
-$dbpass='FUEJo879hobCBCNYjWjpTp2dLS2zQUliOJ'; #change this
+$dbpass='Change me';
 $basepath='';
 $dbname='roundcube';
 $dbserver='';
