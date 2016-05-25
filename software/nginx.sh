@@ -13,8 +13,7 @@ ssh -t $USER@$IP '
   sudo service php5-fpm restart;'
 
 #configure nginx
-git clone git@gitlab.shrlck.de:team/nginx-configs.git;
-scp -r nginx-configs/ $USER@$IP:~/;
+scp -r ../configs/nginx-configs/ $USER@$IP:~/;
 rm -rf nginx-configs/;
 
 ./diffie-hellman.sh $USER $IP;
