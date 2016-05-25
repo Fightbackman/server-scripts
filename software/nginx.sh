@@ -26,7 +26,7 @@ ssh -t $USER@$IP '
   sudo ln -s /usr/share/nginx/ /var/www;
   sudo mkdir /var/www/html/site/; #for site config
   sudo service nginx stop;
-  /opt/certbot/certbot-auto certonly --test-cert -d kevin-diehl.de;';
+  #/opt/certbot/certbot-auto certonly --test-cert -d site.de;';
 
 # error because dhmparams is not in place (of course)
 # ssh -t $USER@$IP 'sudo service nginx start';
