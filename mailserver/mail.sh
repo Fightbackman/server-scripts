@@ -4,7 +4,7 @@ IP=$2
 DOMAIN=$3;
 
 if [ $(echo $@ | grep -o "complete") == 'complete' ]; then
-  ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot dovecot-conf roundcube roundcube-conf phpmyadmin mail-db mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
+  ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot-bin dovecot-conf roundcube-bin roundcube-conf phpmyadmin mail-db mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
 else
   ARGS=$@;
 fi;
@@ -61,7 +61,7 @@ fi;
 
 # Dovecot
 # ===============================
-if [ $(echo $ARGS | grep -o "dovecot") == 'dovecot' ]; then
+if [ $(echo $ARGS | grep -o "dovecot-bin") == 'dovecot-bin' ]; then
   echo "DOVECOT";
   read;
   ssh -t $USER@$IP '
@@ -71,7 +71,7 @@ fi;
 
 # Roundcube
 # ===============================
-if [ $(echo $ARGS | grep -o "roundcube") == 'roundcube' ]; then
+if [ $(echo $ARGS | grep -o "roundcube-bin") == 'roundcube-bin' ]; then
   echo "ROUNDCUBE this will harm your apache2!!!";
   read;
   ssh -t $USER@$IP '
@@ -169,7 +169,7 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
     sudo useradd -g vmail -u 5000 vmail -d /var/vmail -m;
     sudo chown -R vmail.vmail /var/vmail;';
 
-  ssh -t $USER@$IP 'rm -rf /etc/dovecot/*;';
+  ssh -t $USER@$IP 'sudo rm -rf /etc/dovecot/*;';
   cp -r ../configs/dovecot-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
@@ -209,7 +209,7 @@ if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   scp -r roundcube-conf $USER@$IP:~/;
   rm -rf roundcube-conf;
   ssh -t $USER@$IP '
-    rm -rf /etc/roundcube/*;
+    sudo rm -rf /etc/roundcube/*;
     sudo cp -r ~/roundcube-conf/* /etc/roundcube/;
     rm -rf ~/roundcube-conf;
     sudo ln -s /usr/share/roundcube/ /var/www/html/roundcube;';
@@ -251,12 +251,12 @@ if [ $(echo $ARGS | grep -o "spamassassin-enable") == 'spamassassin-enable' ]; t
   sudo postconf smtpd_milters=unix:/spamass/spamass.sock;
   sudo postconf milter_connect_macros='i j {daemon_name} v {if_name} _';
   sudo cp /etc/default/spamassassin ~/;
-  sudo chown -R $USER:$USER ~/spamassassin";
+  sudo chown $USER ~/spamassassin";
 
   scp $USER@$IP:~/spamassassin . ;
   sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
   sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
-  scp spamassassin $USER@$IP:~/;
+  scp spamassassin $USER@$IP:~;
   rm spamassassin*;
   ssh -t $USER@$IP '
   sudo mv ~/spamassassin /etc/default/spamassassin;
@@ -274,6 +274,7 @@ if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
   echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" >> query.sql;
   scp query.sql $USER@$IP:~;
   rm query.sql;
+  echo "Mysql root password required:";
   ssh -t $USER@$IP 'mysql -u root -p < ~/query.sql; rm ~/query.sql;';
 fi;
 
