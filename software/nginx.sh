@@ -24,7 +24,7 @@ ssh -t $USER@$IP '
   sudo mv ~/nginx-configs/* /etc/nginx/;
   sudo rm -rf /var/www;
   sudo ln -s /usr/share/nginx/ /var/www;
-  sudo mkdir /var/www/html/kevin-diehl/;
+  sudo mkdir /var/www/html/site/; #for site config
   sudo service nginx stop;
   /opt/certbot/certbot-auto certonly --test-cert -d kevin-diehl.de;';
 
