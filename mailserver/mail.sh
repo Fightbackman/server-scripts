@@ -4,7 +4,7 @@ IP=$2
 DOMAIN=$3;
 
 if [ $(echo $@ | grep -o "complete") == 'complete' ]; then
-  ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot dovecot-conf roundcube roundcube-conf phpmyadmin mail-db mailmanager spamassassin debian-bugfix";
+  ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot dovecot-conf roundcube roundcube-conf phpmyadmin mail-db mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
 else
   ARGS=$@;
 fi;
@@ -52,7 +52,7 @@ fi;
 
 # spamassassin
 # ============================
-if [ $(echo $ARGS | grep -o "spamassassin") == 'spamassassin' ]; then
+if [ $(echo $ARGS | grep -o "spamassassin-bin") == 'spamassassin-bin' ]; then
   echo "spamassassin";
   read;
   ssh -t $USER@$IP '
@@ -127,8 +127,9 @@ if [ $(echo $ARGS | grep -o "mail-db") == 'mail-db' ]; then
   echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> create.sql;
   scp create.sql $USER@$IP:~/;
   ssh -t $USER@$IP "
+    echo 'Password for Root user:';
     mysql -u root -p < ~/create.sql;
-    rm ~/create.sql;"
+    rm ~/create.sql;";
   rm create.sql;
 fi;
 # dovecot pw -s SHA256-CRYPT to create secure password hashes
@@ -242,7 +243,7 @@ fi;
 
 # Enable spamassassin
 # ======================
-if [ $(echo $ARGS | grep -o "spamassassin") == 'spamassassin' ]; then
+if [ $(echo $ARGS | grep -o "spamassassin-enable") == 'spamassassin-enable' ]; then
   echo "ENABLE SPAMASSASSIN";
   read;
 
