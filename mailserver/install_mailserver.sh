@@ -201,9 +201,9 @@ if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   read;
   cp -r ../configs/roundcube-conf .;
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sed -i -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
+  sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
   read -p 'Enter Database password for Roundcube: ' mypassword;
-  sed -i -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
+  sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
   #generate $des_key
   sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
   scp -r roundcube-conf $USER@$IP:~/;
