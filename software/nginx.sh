@@ -14,7 +14,19 @@ ssh -t $USER@$IP '
   sudo service php5-fpm restart;';
 
 #configure nginx
-scp -r ../configs/nginx-config/ $USER@$IP:~/;
+cp -r ../configs/nginx-config .;
+
+#mod nginx conf such that it works at least with $DOMAIN
+mv nginx-config/sites/site.de nginx-config/sites/$DOMAIN;
+cd nginx-config/sites/$DOMAIN/;
+mv site.de $DOMAIN;
+sed s/site.de/$DOMAIN/g $DOMAIN;
+sed s/site.de/$DOMAIN/g ssl.conf;
+rm subsite.site.de;
+cd ../../../;
+
+scp -r nginx-config/ $USER@$IP:~/;
+rm -rf nginx-config;
 
 ../general-purpose/diffie-hellman.sh $USER $IP;
 

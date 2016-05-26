@@ -269,6 +269,9 @@ fi;
 # Mailmanager USER to mysql
 # ==========================
 if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
+  echo "Mailmanager Mysql user";
+  read;
+
   read -p "Define mailmanager password: " PASSWORD;
   echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" >query.sql;
   echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" >> query.sql;
@@ -276,6 +279,19 @@ if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
   rm query.sql;
   echo "Mysql root password required:";
   ssh -t $USER@$IP 'mysql -u root -p < ~/query.sql; rm ~/query.sql;';
+fi;
+
+# AdminScripts to /opt/
+# ==========================
+if [ $(echo $ARGS | grep -o "mailadmin") == 'mailadmin' ]; then
+  echo "AdminScripts to /opt/mailadmin"
+  read;
+
+  scp -r admin $IP:~;
+  ssh -t $USER@$IP '
+    sudo mkdir /opt/mailadmin;
+    sudo mv admin/* /opt/mailadmin/;
+    rm -rf admin;';
 fi;
 
 echo "fertig";
