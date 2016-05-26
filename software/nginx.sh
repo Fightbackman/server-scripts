@@ -15,15 +15,7 @@ ssh -t $USER@$IP '
 
 #configure nginx
 cp -r ../configs/nginx-config .;
-
-#mod nginx conf such that it works at least with $DOMAIN
-mv nginx-config/sites/site.de nginx-config/sites/$DOMAIN;
-cd nginx-config/sites/$DOMAIN/;
-mv site.de $DOMAIN;
-sed s/site.de/$DOMAIN/g $DOMAIN;
-sed s/site.de/$DOMAIN/g ssl.conf;
-rm subsite.site.de;
-cd ../../../;
+rm -rf nginx-config/sites/*;
 
 scp -r nginx-config/ $USER@$IP:~/;
 rm -rf nginx-config;
@@ -32,14 +24,18 @@ rm -rf nginx-config;
 
 #customization needed
 ssh -t $USER@$IP "
-  sudo rm -rf ~/etc/nginx/*;
+  sudo rm -rf /etc/nginx/*;
   sudo cp -r ~/nginx-config/* /etc/nginx/;
   sudo rm -rf ~/nginx-config/;
   sudo chown -R root:root /etc/nginx;
   sudo rm -rf /var/www;
   sudo ln -s /usr/share/nginx/ /var/www;
   sudo mkdir /var/www/html/$DOMAIN/;
-  sudo service nginx stop;
+  sudo service nginx stop;";
+
+../general-purpose/createNginxDomain.sh $USER $IP $DOMAIN $DOMAIN;
+
+ssh -t $USER@$IP "
   /opt/certbot/certbot-auto certonly --test-cert -d $DOMAIN;";
 
 # error because dhmparams is not in place (of course)
