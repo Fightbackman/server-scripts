@@ -4,7 +4,7 @@ server {
 	return 301 https://$server_name$request_uri;
 
 	location / {
-	root /usr/share/nginx/html/site.de/;
+	root /usr/share/nginx/html/pathtosite/;
 	index index.php index.html index.htm;
 	try_files $uri/ /index.php?q=$uri&args;
 	include conf.d/php.mconf;
@@ -17,7 +17,7 @@ server{
   include sites/site.de/ssl.conf;
 
 	location / {
-        root /usr/share/nginx/html/roundcube/;
+        root /usr/share/nginx/html/pathtosite/;
         index index.php index.html index.htm;
         try_files $uri/ /index.php?q=$uri&args;
 				include conf.d/php.mconf;
