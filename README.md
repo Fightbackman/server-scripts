@@ -26,7 +26,7 @@ This directory contains the config of Roundcube Webmailer.
 ## General-purpose
 
 ### Basic_security.sh
-
+Installs iptables and fail2ban. Deactivate passwort login for root or all users.
 ### calcHash.py
 This works as a library for calculating Hashes for files or directories.
 
