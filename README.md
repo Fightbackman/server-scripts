@@ -1,5 +1,8 @@
 # server-scripts
 Scripts from our everyday serverwork.
+Warning. We expect systemd ruunning on your system, if you want to use these scripts.
+All scripts are tested with Debian Jessie.
+Support for init.d maybe come with the future or if you help us to improve our scripts for using that.
 
 # List of current storred scripts:
 ### Format: Scriptname: Short discription
