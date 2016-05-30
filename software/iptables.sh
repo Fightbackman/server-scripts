@@ -6,5 +6,6 @@ IP=$2;
 ssh -t $USER@$IP '
   sudo apt-get update;
   sudo apt-get upgrade;
-  sudo apt-get install iptables;'
+  sudo apt-get install iptables;
+  sudo apt-get install iptables-persistent;'
   exit 0;
