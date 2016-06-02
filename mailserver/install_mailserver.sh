@@ -181,6 +181,7 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
   sudo rm -rf ~/dovecot-conf/
   sudo chown root:root /etc/dovecot/dovecot-sql.conf.ext;
   sudo chmod go= /etc/dovecot/dovecot-sql.conf.ext;
+  sudo sievec /etc/dovecot/sieve-after/spam-to-folder.sieve;
   sudo service dovecot restart;
   sudo tail /var/log/mail.log;';
 fi;
@@ -204,7 +205,7 @@ if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
   read -p 'Enter Database password for Roundcube: ' mypassword;
   sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
-  #generate $des_key
+  read -p 'Enter DES KEy: ' des_key ;
   sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
   scp -r roundcube-conf $USER@$IP:~/;
   rm -rf roundcube-conf;
