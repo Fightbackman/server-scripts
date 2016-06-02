@@ -205,7 +205,7 @@ if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
   read -p 'Enter Database password for Roundcube: ' mypassword;
   sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
-  read -p 'Enter DES KEy: ' des_key ;
+  des_key=$(openssl rand -base64 24 | cut -c1-24);
   sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
   scp -r roundcube-conf $USER@$IP:~/;
   rm -rf roundcube-conf;
