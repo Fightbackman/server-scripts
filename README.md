@@ -1,5 +1,9 @@
 # server-scripts
 Scripts from our everyday serverwork.
+All of this scripts are published under the GPLv3 if not other specified.
+Warning. We expect systemd ruunning on your system, if you want to use these scripts.
+All scripts are tested with Debian Jessie.
+Support for init.d maybe come with the future or if you help us to improve our scripts for using that.
 
 # List of current storred scripts:
 ### Format: Scriptname: Short discription
@@ -26,7 +30,7 @@ This directory contains the config of Roundcube Webmailer.
 ## General-purpose
 
 ### Basic_security.sh
-
+Installs iptables and fail2ban. Deactivate passwort login for root or all users.
 ### calcHash.py
 This works as a library for calculating Hashes for files or directories.
 
