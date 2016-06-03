@@ -12,7 +12,12 @@ mkdir sites/$MAINDOMAIN;
 
 #if subdomain
 if [ $(echo "$DOMAIN" | grep -o "\." | wc -l) -gt 1 ]; then
-  cp ../configs/nginx-config/sites/site.de/subsite.site.de sites/$MAINDOMAIN/$DOMAIN; #change filename to domain in the folder of the maindomain
+  if [ $WWWPATH == 'owncloud' ];then
+    cp ../configs/nginx-config/sites/site.de/owncloud.site.de sites/$MAINDOMAIN/$DOMAIN;
+  else
+    cp ../configs/nginx-config/sites/site.de/subsite.site.de sites/$MAINDOMAIN/$DOMAIN; #change filename to domain in the folder of the maindomain
+  fi;
+  
   sed -i.bak s/subsite.site.de/$DOMAIN/g sites/$MAINDOMAIN/$DOMAIN; #change servername etc.
   sed -i.bak s/site.de/$MAINDOMAIN/g sites/$MAINDOMAIN/$DOMAIN; # change location of ssl.conf
   sed -i.bak s/pathtosite/$WWWPATH/g sites/$MAINDOMAIN/$DOMAIN; # change location of the webcontent
@@ -25,6 +30,7 @@ else
   sed -i.bak s/pathtosite/$WWWPATH/g sites/$DOMAIN/$DOMAIN; #change pathto website
   sed -i.bak s/site.de/$DOMAIN/g sites/$DOMAIN/ssl.conf; #change ssl cert location in ssl.conf
 fi;
+
 rm -rf sites/$MAINDOMAIN/*.bak;
 scp -r sites/$MAINDOMAIN $USER@$IP:~/;
 

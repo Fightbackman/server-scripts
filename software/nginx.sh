@@ -30,6 +30,7 @@ ssh -t $USER@$IP "
   sudo chown -R root:root /etc/nginx;
   sudo rm -rf /var/www;
   sudo ln -s /usr/share/nginx/ /var/www;
+  sudo mkdir /var/www/html/letsencrypt;
   sudo mkdir /var/www/html/$DOMAIN/;
   sudo service nginx stop;";
 
