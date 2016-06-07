@@ -3,10 +3,10 @@ USER=$1;
 IP=$2
 DOMAIN=$3;
 
-if [ $(echo $@ | grep -o "complete") == 'complete' ]; then
+if [ $(echo "$@" | grep -o "complete") == "complete" ]; then
   ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot-bin dovecot-conf roundcube-bin roundcube-conf phpmyadmin mail-db mailadmin mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
 else
-  ARGS=$@;
+  ARGS="$*";
 fi;
 
 # maybe use this and send crypted password on slack

@@ -3,7 +3,7 @@ USER=$1;
 IP=$2;
 
 #generate ssh key
-cd ~/.ssh/;
+cd ~/.ssh/ || exit -1;
 echo "generating keypair"
 ssh-keygen -t rsa -b 4096;
 cat ~/.ssh/id_rsa.pub;

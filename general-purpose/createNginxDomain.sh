@@ -17,7 +17,7 @@ if [ $(echo "$DOMAIN" | grep -o "\." | wc -l) -gt 1 ]; then
   else
     cp ../configs/nginx-config/sites/site.de/subsite.site.de sites/$MAINDOMAIN/$DOMAIN; #change filename to domain in the folder of the maindomain
   fi;
-  
+
   sed -i.bak s/subsite.site.de/$DOMAIN/g sites/$MAINDOMAIN/$DOMAIN; #change servername etc.
   sed -i.bak s/site.de/$MAINDOMAIN/g sites/$MAINDOMAIN/$DOMAIN; # change location of ssl.conf
   sed -i.bak s/pathtosite/$WWWPATH/g sites/$MAINDOMAIN/$DOMAIN; # change location of the webcontent

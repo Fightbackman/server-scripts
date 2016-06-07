@@ -1,3 +1,4 @@
+#!/bin/bash
 USER=$1;
 IP=$2;
 #on remote
