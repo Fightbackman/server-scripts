@@ -14,11 +14,11 @@ ssh -t $USER@$IP '
   sudo service php5-fpm restart;';
 
 #configure nginx
-cp -r ../configs/nginx-config .;
-rm -rf nginx-config/sites/*;
+sudo cp -r ../configs/nginx-config .;
+sudo rm -rf nginx-config/sites/*;
 
-scp -r nginx-config/ $USER@$IP:~/;
-rm -rf nginx-config;
+sudo scp -r nginx-config/ $USER@$IP:~/;
+sudo rm -rf nginx-config;
 
 ../general-purpose/diffie-hellman.sh $USER $IP;
 

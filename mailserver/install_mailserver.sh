@@ -3,7 +3,7 @@ USER=$1;
 IP=$2
 DOMAIN=$3;
 
-if [ $(echo "$@" | grep -o "complete") == "complete" ]; then
+if [ $(echo "$@" | grep -o 'complete') == 'complete' ]; then
   ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot-bin dovecot-conf roundcube-bin roundcube-conf phpmyadmin mail-db mailadmin mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
 else
   ARGS="$*";
@@ -98,34 +98,34 @@ fi;
 # ===============================
 if [ $(echo $ARGS | grep -o "mail-db") == 'mail-db' ]; then
   echo "Mail DATABASE";
-  read;
-  read -p 'Enter Password of mailuser: ' mypassword ;
-  echo 'CREATE DATABASE mailserver;' > create.sql;
-  echo "GRANT SELECT,INSERT,UPDATE,DELETE ON mailserver.* TO 'mailuser'@'127.0.0.1' IDENTIFIED BY '$mypassword';" >> create.sql;
-  echo 'USE mailserver;' >> create.sql;
-  echo 'CREATE TABLE IF NOT EXISTS `virtual_domains` (' >> create.sql;
-  echo '`id` int(11) NOT NULL auto_increment,' >> create.sql;
-  echo '`name` varchar(50) NOT NULL,' >> create.sql;
-  echo 'PRIMARY KEY (`id`)' >> create.sql;
-  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> create.sql;
-  echo 'CREATE TABLE IF NOT EXISTS `virtual_users` (' >> create.sql;
-  echo '`id` int(11) NOT NULL auto_increment,' >> create.sql;
-  echo '`domain_id` int(11) NOT NULL,' >> create.sql;
-  echo '`email` varchar(100) NOT NULL,' >> create.sql;
-  echo '`password` varchar(150) NOT NULL,' >> create.sql;
-  echo 'PRIMARY KEY (`id`),' >> create.sql;
-  echo 'UNIQUE KEY `email` (`email`),' >> create.sql;
-  echo 'FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE' >> create.sql;
-  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> create.sql;
-  echo 'CREATE TABLE IF NOT EXISTS `virtual_aliases` (' >> create.sql;
-  echo '`id` int(11) NOT NULL auto_increment,' >> create.sql;
-  echo '`domain_id` int(11) NOT NULL,' >> create.sql;
-  echo '`source` varchar(100) NOT NULL,' >> create.sql;
-  echo '`destination` varchar(100) NOT NULL,' >> create.sql;
-  echo 'PRIMARY KEY (`id`),' >> create.sql;
-  echo 'FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE' >> create.sql;
-  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> create.sql;
-  scp create.sql $USER@$IP:~/;
+  sudo read;
+  sudo read -p 'Enter Password of mailuser: ' mypassword ;
+  echo 'CREATE DATABASE mailserver;' | sudo tee create.sql;
+  echo "GRANT SELECT,INSERT,UPDATE,DELETE ON mailserver.* TO 'mailuser'@'127.0.0.1' IDENTIFIED BY '$mypassword';" | sudo tee -a create.sql;
+  echo 'USE mailserver;' | sudo tee -a create.sql;
+  echo 'CREATE TABLE IF NOT EXISTS `virtual_domains` (' | sudo tee -a create.sql;
+  echo '`id` int(11) NOT NULL auto_increment,' | sudo tee -a create.sql;
+  echo '`name` varchar(50) NOT NULL,' | sudo tee -a create.sql;
+  echo 'PRIMARY KEY (`id`)' | sudo tee -a create.sql;
+  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' | sudo tee -a create.sql;
+  echo 'CREATE TABLE IF NOT EXISTS `virtual_users` (' | sudo tee -a create.sql;
+  echo '`id` int(11) NOT NULL auto_increment,' | sudo tee -a create.sql;
+  echo '`domain_id` int(11) NOT NULL,' | sudo tee -a create.sql;
+  echo '`email` varchar(100) NOT NULL,' | sudo tee -a create.sql;
+  echo '`password` varchar(150) NOT NULL,' | sudo tee -a create.sql;
+  echo 'PRIMARY KEY (`id`),' | sudo tee -a create.sql;
+  echo 'UNIQUE KEY `email` (`email`),' | sudo tee -a create.sql;
+  echo 'FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE' | sudo tee -a create.sql;
+  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' | sudo tee -a create.sql;
+  echo 'CREATE TABLE IF NOT EXISTS `virtual_aliases` (' | sudo tee -a create.sql;
+  echo '`id` int(11) NOT NULL auto_increment,' | sudo tee -a create.sql;
+  echo '`domain_id` int(11) NOT NULL,' | sudo tee -a create.sql;
+  echo '`source` varchar(100) NOT NULL,' | sudo tee -a create.sql;
+  echo '`destination` varchar(100) NOT NULL,' | sudo tee -a create.sql;
+  echo 'PRIMARY KEY (`id`),' | sudo tee -a create.sql;
+  echo 'FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE' | sudo tee -a create.sql;
+  echo ') ENGINE=InnoDB DEFAULT CHARSET=utf8;' | sudo tee -a create.sql;
+  sudo scp create.sql $USER@$IP:~/;
   ssh -t $USER@$IP "
     echo 'Password for Root user:';
     mysql -u root -p < ~/create.sql;
@@ -139,15 +139,15 @@ fi;
 if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
   read;
-  cp -r ../configs/postfix-conf .;
+  sudo  cp -r ../configs/postfix-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
-  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-maps.cf;
-  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-alias-maps.cf;
-  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-email2email.cf;
-  scp -r postfix-conf/ $USER@$IP:~/;
-  rm -rf postfix-conf/;
+  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
+  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-maps.cf;
+  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-alias-maps.cf;
+  sudo  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-email2email.cf;
+  sudo scp -r postfix-conf/ $USER@$IP:~/;
+  sudo rm -rf postfix-conf/;
   ssh -t $USER@$IP "
   sudo mv ~/postfix-conf/*.cf /etc/postfix/;
   rm -rf ~/postfix-conf/;
@@ -170,12 +170,12 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
     sudo chown -R vmail.vmail /var/vmail;';
 
   ssh -t $USER@$IP 'sudo rm -rf /etc/dovecot/*;';
-  cp -r ../configs/dovecot-conf .;
+  sudo cp -r ../configs/dovecot-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
-  scp -r dovecot-conf/ $USER@$IP:~/;
-  rm -rf dovecot-conf/;
+  sudo sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
+  sudo scp -r dovecot-conf/ $USER@$IP:~/;
+  sudo rm -rf dovecot-conf/;
   ssh -t $USER@$IP '
   sudo mv ~/dovecot-conf/* /etc/dovecot/;
   sudo rm -rf ~/dovecot-conf/
@@ -200,15 +200,15 @@ fi;
 if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
   read;
-  cp -r ../configs/roundcube-conf .;
+  sudo cp -r ../configs/roundcube-conf .;
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
-  read -p 'Enter Database password for Roundcube: ' mypassword;
-  sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
+  sudo sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
+  sudo read -p 'Enter Database password for Roundcube: ' mypassword;
+  sudo sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
   des_key=$(openssl rand -base64 24 | cut -c1-24);
-  sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
-  scp -r roundcube-conf $USER@$IP:~/;
-  rm -rf roundcube-conf;
+  sudo sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
+  sudo scp -r roundcube-conf $USER@$IP:~/;
+  sudo rm -rf roundcube-conf;
   ssh -t $USER@$IP '
     sudo rm -rf /etc/roundcube/*;
     sudo cp -r ~/roundcube-conf/* /etc/roundcube/;
@@ -255,10 +255,10 @@ if [ $(echo $ARGS | grep -o "spamassassin-enable") == 'spamassassin-enable' ]; t
   sudo chown $USER ~/spamassassin";
 
   scp $USER@$IP:~/spamassassin . ;
-  sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
-  sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
-  scp spamassassin $USER@$IP:~;
-  rm spamassassin*;
+  sudo sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
+  sudo sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
+  sudo scp spamassassin $USER@$IP:~;
+  sudo rm spamassassin*;
   ssh -t $USER@$IP '
   sudo mv ~/spamassassin /etc/default/spamassassin;
   sudo systemctl enable spamassassin;
@@ -274,10 +274,10 @@ if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
   read;
 
   read -p "Define mailmanager password: " PASSWORD;
-  echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" >query.sql;
-  echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" >> query.sql;
-  scp query.sql $USER@$IP:~;
-  rm query.sql;
+  echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" | sudo tee query.sql;
+  echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" | sudo tee -a query.sql;
+  sudo scp query.sql $USER@$IP:~;
+  sudo rm query.sql;
   echo "Mysql root password required:";
   ssh -t $USER@$IP 'mysql -u root -p < ~/query.sql; rm ~/query.sql;';
 fi;
@@ -288,8 +288,8 @@ if [ $(echo $ARGS | grep -o "mailadmin") == 'mailadmin' ]; then
   echo "AdminScripts to /opt/mailadmin"
   read;
 
-  scp -r admin $IP:~;
-  ssh -t $USER@$IP '
+  sudo scp -r admin $IP:~;
+  sudo ssh -t $USER@$IP '
     sudo mkdir /opt/mailadmin;
     sudo mv admin/* /opt/mailadmin/;
     rm -rf admin;';

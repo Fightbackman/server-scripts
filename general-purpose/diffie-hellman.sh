@@ -4,7 +4,7 @@ IP=$2;
 
 #scp ../Slack/postToSlack.sh $USER@$IP:~/;
 
-scp ../general-purpose/diffie-hellman-background.sh $USER@$IP:~/;
+sudo scp ../general-purpose/diffie-hellman-background.sh $USER@$IP:~/;
 
 ssh -t $USER@$IP 'sudo apt-get install curl;';
 
