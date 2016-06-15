@@ -139,23 +139,23 @@ fi;
 if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
   read;
-  sudo  cp -r ../configs/postfix-conf .;
+  cp -r ../configs/postfix-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
-  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-maps.cf;
-  sudo sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-alias-maps.cf;
-  sudo  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-email2email.cf;
-  sudo scp -r postfix-conf/ $USER@$IP:~/;
-  sudo rm -rf postfix-conf/;
+  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-domains.cf;
+  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-mailbox-maps.cf;
+  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-virtual-alias-maps.cf;
+  sed -i.bak "s/^\(password = \).*/\1$mypassword/" postfix-conf/mysql-email2email.cf;
+  scp -r postfix-conf/ $USER@$IP:~/;
+  rm -rf postfix-conf/;
   ssh -t $USER@$IP "
-  sudo mv ~/postfix-conf/*.cf /etc/postfix/;
-  rm -rf ~/postfix-conf/;
-  sudo postconf virtual_mailbox_domains=mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf;
-  sudo postconf virtual_mailbox_maps=mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf;
-  sudo postconf virtual_alias_maps=mysql:/etc/postfix/mysql-virtual-alias-maps.cf,mysql:/etc/postfix/mysql-email2email.cf
-  sudo chgrp postfix /etc/postfix/mysql-*.cf;
-  sudo chmod u=rw,g=r,o= /etc/postfix/mysql-*.cf;";
+    sudo mv ~/postfix-conf/*.cf /etc/postfix/;
+    rm -rf ~/postfix-conf/;
+    sudo postconf virtual_mailbox_domains=mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf;
+    sudo postconf virtual_mailbox_maps=mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf;
+    sudo postconf virtual_alias_maps=mysql:/etc/postfix/mysql-virtual-alias-maps.cf,mysql:/etc/postfix/mysql-email2email.cf
+    sudo chgrp postfix /etc/postfix/mysql-*.cf;
+    sudo chmod u=rw,g=r,o= /etc/postfix/mysql-*.cf;";
 fi;
 
 # Dovecot Config
@@ -170,20 +170,20 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
     sudo chown -R vmail.vmail /var/vmail;';
 
   ssh -t $USER@$IP 'sudo rm -rf /etc/dovecot/*;';
-  sudo cp -r ../configs/dovecot-conf .;
+  cp -r ../configs/dovecot-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sudo sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
-  sudo scp -r dovecot-conf/ $USER@$IP:~/;
-  sudo rm -rf dovecot-conf/;
+  sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
+  scp -r dovecot-conf/ $USER@$IP:~/;
+  rm -rf dovecot-conf/;
   ssh -t $USER@$IP '
-  sudo mv ~/dovecot-conf/* /etc/dovecot/;
-  sudo rm -rf ~/dovecot-conf/
-  sudo chown root:root /etc/dovecot/dovecot-sql.conf.ext;
-  sudo chmod go= /etc/dovecot/dovecot-sql.conf.ext;
-  sudo sievec /etc/dovecot/sieve-after/spam-to-folder.sieve;
-  sudo service dovecot restart;
-  sudo tail /var/log/mail.log;';
+    sudo mv ~/dovecot-conf/* /etc/dovecot/;
+    sudo rm -rf ~/dovecot-conf/
+    sudo chown root:root /etc/dovecot/dovecot-sql.conf.ext;
+    sudo chmod go= /etc/dovecot/dovecot-sql.conf.ext;
+    sudo sievec /etc/dovecot/sieve-after/spam-to-folder.sieve;
+    sudo service dovecot restart;
+    sudo tail /var/log/mail.log;';
 fi;
 
 # Postfix LMTP communication
@@ -200,15 +200,15 @@ fi;
 if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
   read;
-  sudo cp -r ../configs/roundcube-conf .;
+  cp -r ../configs/roundcube-conf .;
   read -p 'Enter Password of mailuser: ' mypassword ;
-  sudo sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
-  sudo read -p 'Enter Database password for Roundcube: ' mypassword;
-  sudo sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
+  sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
+  read -p 'Enter Database password for Roundcube: ' mypassword;
+  sed -i.bak -e "s/Change me/$mypassword/g" roundcube-conf/debian-db.php;
   des_key=$(openssl rand -base64 24 | cut -c1-24);
-  sudo sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
-  sudo scp -r roundcube-conf $USER@$IP:~/;
-  sudo rm -rf roundcube-conf;
+  sed -i -e "s/CHANGE ME/$des_key/g" roundcube-conf/config.inc.php;
+  scp -r roundcube-conf $USER@$IP:~/;
+  rm -rf roundcube-conf;
   ssh -t $USER@$IP '
     sudo rm -rf /etc/roundcube/*;
     sudo cp -r ~/roundcube-conf/* /etc/roundcube/;
@@ -249,22 +249,22 @@ if [ $(echo $ARGS | grep -o "spamassassin-enable") == 'spamassassin-enable' ]; t
   read;
 
   ssh -t $USER@$IP "
-  sudo postconf smtpd_milters=unix:/spamass/spamass.sock;
-  sudo postconf milter_connect_macros='i j {daemon_name} v {if_name} _';
-  sudo cp /etc/default/spamassassin ~/;
-  sudo chown $USER ~/spamassassin";
+    sudo postconf smtpd_milters=unix:/spamass/spamass.sock;
+    sudo postconf milter_connect_macros='i j {daemon_name} v {if_name} _';
+    sudo cp /etc/default/spamassassin ~/;
+    sudo chown $USER ~/spamassassin";
 
   scp $USER@$IP:~/spamassassin . ;
-  sudo sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
-  sudo sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
-  sudo scp spamassassin $USER@$IP:~;
-  sudo rm spamassassin*;
+  sed -i.bak 's/^\(OPTIONS=\).*/\1"--create-prefs --max-children 5 --helper-home-dir -x -u vmail"/' spamassassin;
+  sed -i.bak "s/^\(CRON=\).*/\11/" spamassassin;
+  scp spamassassin $USER@$IP:~;
+  rm spamassassin*;
   ssh -t $USER@$IP '
-  sudo mv ~/spamassassin /etc/default/spamassassin;
-  sudo systemctl enable spamassassin;
-  sudo adduser spamass-milter debian-spamd;
-  sudo service spamassassin restart;
-  sudo service spamass-milter restart;';
+    sudo mv ~/spamassassin /etc/default/spamassassin;
+    sudo systemctl enable spamassassin;
+    sudo adduser spamass-milter debian-spamd;
+    sudo service spamassassin restart;
+    sudo service spamass-milter restart;';
 fi;
 
 # Mailmanager USER to mysql
@@ -276,8 +276,8 @@ if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
   read -p "Define mailmanager password: " PASSWORD;
   echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" | sudo tee query.sql;
   echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" | sudo tee -a query.sql;
-  sudo scp query.sql $USER@$IP:~;
-  sudo rm query.sql;
+  scp query.sql $USER@$IP:~;
+  rm query.sql;
   echo "Mysql root password required:";
   ssh -t $USER@$IP 'mysql -u root -p < ~/query.sql; rm ~/query.sql;';
 fi;
@@ -288,8 +288,8 @@ if [ $(echo $ARGS | grep -o "mailadmin") == 'mailadmin' ]; then
   echo "AdminScripts to /opt/mailadmin"
   read;
 
-  sudo scp -r admin $IP:~;
-  sudo ssh -t $USER@$IP '
+  scp -r admin $IP:~;
+  ssh -t $USER@$IP '
     sudo mkdir /opt/mailadmin;
     sudo mv admin/* /opt/mailadmin/;
     rm -rf admin;';
