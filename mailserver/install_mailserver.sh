@@ -174,6 +174,7 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
+  sed -i.bak "s/site\.de/$domain/g" dovecot-conf/conf.d/10-ssl.conf;
   scp -r dovecot-conf/ $USER@$IP:~/;
   rm -rf dovecot-conf/;
   ssh -t $USER@$IP '
@@ -274,8 +275,8 @@ if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
   read;
 
   read -p "Define mailmanager password: " PASSWORD;
-  echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" | sudo tee query.sql;
-  echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" | sudo tee -a query.sql;
+  echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" > query.sql;
+  echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" >> query.sql;
   scp query.sql $USER@$IP:~;
   rm query.sql;
   echo "Mysql root password required:";
