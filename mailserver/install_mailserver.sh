@@ -174,9 +174,9 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
-  sed -i.bak "s/site\.de/$domain/g" dovecot-conf/conf.d/10-ssl.conf;
-  mv dovecot-conf/conf.d/dovecot-crt_imap_site.de.conf dovecot-conf/conf.d/dovecot-crt_imap_$domain.conf;
-  sed -i.bak "s/site\.de/$domain/g" dovecot-conf/conf.d/dovecot-crt_imap_$domain.conf;
+  sed -i.bak "s/site\.de/$DOMAIN/g" dovecot-conf/conf.d/10-ssl.conf;
+  mv dovecot-conf/conf.d/dovecot-crt_imap_site.de.conf dovecot-conf/conf.d/dovecot-crt_imap_$DOMAIN.conf;
+  sed -i.bak "s/site\.de/$DOMAIN/g" dovecot-conf/conf.d/dovecot-crt_imap_$DOMAIN.conf;
   scp -r dovecot-conf/ $USER@$IP:~/;
   rm -rf dovecot-conf/;
   ssh -t $USER@$IP '
@@ -229,11 +229,11 @@ if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
     sudo postconf smtpd_sasl_path=private/auth;
     sudo postconf smtpd_sasl_auth_enable=yes;';
   # Enable encryption
-  ssh -t $USER@$IP '
+  ssh -t $USER@$IP "
     sudo postconf smtpd_tls_security_level=may;
     sudo postconf smtpd_tls_auth_only=yes;
-    sudo postconf smtpd_tls_cert_file=/etc/letsencrypt/live/kevin-diehl.de/cert.pem;
-    sudo postconf smtpd_tls_key_file=/etc/letsencrypt/live/kevin-diehl.de/privkey.pem;';
+    sudo postconf smtpd_tls_cert_file=/etc/letsencrypt/live/$DOMAIN/cert.pem;
+    sudo postconf smtpd_tls_key_file=/etc/letsencrypt/live/$DOMAIN/privkey.pem;";
 fi;
 
 # Fix Debian bug #739738
