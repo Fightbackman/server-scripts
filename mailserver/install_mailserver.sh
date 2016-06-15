@@ -175,6 +175,8 @@ if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak "s/^\(connect = host=127.0.0.1 dbname=mailserver user=mailuser password=\).*/\1$mypassword/" dovecot-conf/dovecot-sql.conf.ext;
   sed -i.bak "s/site\.de/$domain/g" dovecot-conf/conf.d/10-ssl.conf;
+  mv dovecot-conf/conf.d/dovecot-crt_imap_site.de.conf dovecot-conf/conf.d/dovecot-crt_imap_$domain.conf;
+  sed -i.bak "s/site\.de/$domain/g" dovecot-conf/conf.d/dovecot-crt_imap_$domain.conf;
   scp -r dovecot-conf/ $USER@$IP:~/;
   rm -rf dovecot-conf/;
   ssh -t $USER@$IP '
