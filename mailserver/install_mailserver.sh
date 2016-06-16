@@ -232,7 +232,7 @@ if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
   ssh -t $USER@$IP "
     sudo postconf smtpd_tls_security_level=may;
     sudo postconf smtpd_tls_auth_only=yes;
-    sudo postconf smtpd_tls_cert_file=/etc/letsencrypt/live/$DOMAIN/cert.pem;
+    sudo postconf smtpd_tls_cert_file=/etc/letsencrypt/live/$DOMAIN/fullchain.pem;
     sudo postconf smtpd_tls_key_file=/etc/letsencrypt/live/$DOMAIN/privkey.pem;";
 fi;
 
