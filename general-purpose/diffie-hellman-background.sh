@@ -1,4 +1,5 @@
 #!/bin/bash
+#is executed on server
 sudo openssl dhparam -out dhparams.pem 4096;
 #~/postToSlack.sh "Diffie Hellman" "Key wurde erstellt";
 sudo rm ~/diffie-hellman-background.sh;

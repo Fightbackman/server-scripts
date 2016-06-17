@@ -65,7 +65,7 @@ if [ $(echo $ARGS | grep -o "dovecot-bin") == 'dovecot-bin' ]; then
   echo "DOVECOT";
   read;
   ssh -t $USER@$IP '
-  sudo apt-get install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
+    sudo apt-get install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
 fi;
 
 
@@ -154,6 +154,8 @@ if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
     sudo postconf virtual_mailbox_domains=mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf;
     sudo postconf virtual_mailbox_maps=mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf;
     sudo postconf virtual_alias_maps=mysql:/etc/postfix/mysql-virtual-alias-maps.cf,mysql:/etc/postfix/mysql-email2email.cf
+    sudo postconf myhostname=mail.$DOMAIN;
+    #sudo postconf mydestination=mail.$DOMAIN,localhost.localdomain,localhost;
     sudo chgrp postfix /etc/postfix/mysql-*.cf;
     sudo chmod u=rw,g=r,o= /etc/postfix/mysql-*.cf;";
 fi;
