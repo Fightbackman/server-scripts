@@ -9,4 +9,4 @@ ssh -t $USER@$IP '
   sudo apt-get install git;
   cd /opt/;
   sudo git clone https://github.com/certbot/certbot;
-  sudo mkdir /etc/letsencrypt/configs/;' #update this
+  sudo mkdir /etc/letsencrypt/configs/;' 
