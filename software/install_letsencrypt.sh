@@ -6,7 +6,7 @@ IP=$2;
 ssh -t $USER@$IP '
   sudo apt-get update;
   sudo apt-get upgrade;
-  sudo apt-get install git;
+  sudo apt-get -y install git;
   cd /opt/;
   sudo git clone https://github.com/certbot/certbot;
-  sudo mkdir /etc/letsencrypt/configs/;' #update this
+  sudo mkdir /etc/letsencrypt/configs/;'

@@ -3,7 +3,7 @@ USER=$1;
 IP=$2
 DOMAIN=$3;
 
-if [ $(echo "$@" | grep -o 'complete') == 'complete' ]; then
+if [ "$(echo "$@" | grep -o 'complete')" == 'complete' ]; then
   ARGS="letsencrypt nginx mysql-server postfix-bin postfix-conf dovecot-bin dovecot-conf roundcube-bin roundcube-conf phpmyadmin mail-db mailadmin mailmanager spamassassin-bin spamassassin-enable debian-bugfix";
 else
   ARGS="$*";
@@ -19,7 +19,7 @@ fi;
 
 # letsencrypt
 # ===================
-if [ $(echo $ARGS | grep -o "letsencrypt") == 'letsencrypt' ]; then
+if [ "$(echo $ARGS | grep -o 'letsencrypt')" == 'letsencrypt' ]; then
   echo "letsencrypt";
   read;
   ../software/install_letsencrypt.sh $USER $IP;
@@ -28,7 +28,7 @@ fi;
 # NGINX
 # ===============================
 
-if [ $(echo $ARGS | grep -o "nginx") == 'nginx' ]; then
+if [ "$(echo $ARGS | grep -o 'nginx')" == 'nginx' ]; then
   echo "NGINX";
   read;
   ../software/nginx.sh $USER $IP $DOMAIN;
@@ -36,7 +36,7 @@ fi;
 
 # Mysql Server
 # ===============================
-if [ $(echo $ARGS | grep -o "mysql-server") == 'mysql-server' ]; then
+if [ "$(echo $ARGS | grep -o 'mysql-server')" == 'mysql-server' ]; then
   echo "MYSQL";
   read;
   ../software/mysql-server.sh $USER $IP;
@@ -44,7 +44,7 @@ fi;
 
 # Postfix
 # ===============================
-if [ $(echo $ARGS | grep -o "postfix-bin") == 'postfix-bin' ]; then
+if [ "$(echo $ARGS | grep -o 'postfix-bin')" == 'postfix-bin' ]; then
   echo "POSTFIX";
   read;
   ../software/postfix.sh $USER $IP;
@@ -52,51 +52,51 @@ fi;
 
 # spamassassin
 # ============================
-if [ $(echo $ARGS | grep -o "spamassassin-bin") == 'spamassassin-bin' ]; then
+if [ "$(echo $ARGS | grep -o 'spamassassin-bin')" == 'spamassassin-bin' ]; then
   echo "spamassassin";
   read;
   ssh -t $USER@$IP '
-    sudo apt-get install spamassassin spamass-milter;';
+    sudo apt-get -y install spamassassin spamass-milter;';
 fi;
 
 # Dovecot
 # ===============================
-if [ $(echo $ARGS | grep -o "dovecot-bin") == 'dovecot-bin' ]; then
+if [ "$(echo $ARGS | grep -o 'dovecot-bin')" == 'dovecot-bin' ]; then
   echo "DOVECOT";
   read;
   ssh -t $USER@$IP '
-  sudo apt-get install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
+    sudo apt-get -y install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
 fi;
 
 
 # Roundcube
 # ===============================
-if [ $(echo $ARGS | grep -o "roundcube-bin") == 'roundcube-bin' ]; then
+if [ "$(echo $ARGS | grep -o 'roundcube-bin')" == 'roundcube-bin' ]; then
   echo "ROUNDCUBE this will harm your apache2!!!";
   read;
   ssh -t $USER@$IP '
     sudo su -c "echo \"deb http://http.debian.net/debian jessie-backports main\" > /etc/apt/sources.list.d/jessie-backports.list";
-    sudo apt-get update;
-    sudo apt-get install roundcube roundcube-plugins;
+    sudo apt-get -y update;
+    sudo apt-get -y install roundcube roundcube-plugins;
     sudo service apache2 stop;
-    sudo apt-get purge apache2;
-    sudo apt-get autoremove;';
+    sudo apt-get -y purge apache2;
+    sudo apt-get -y autoremove;';
 fi;
 
 # phpmyadmin
 # ===============================
-if [ $(echo $ARGS | grep -o "phpmyadmin") == 'phpmyadmin' ]; then
+if [ "$(echo $ARGS | grep -o 'phpmyadmin')" == 'phpmyadmin' ]; then
   echo "phpmyadmin";
   read;
   ssh -t $USER@$IP '
-    sudo apt-get install phpmyadmin;
+    sudo apt-get -y install phpmyadmin;
     sudo ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin;
   ';
 fi;
 
 # Mail database and user
 # ===============================
-if [ $(echo $ARGS | grep -o "mail-db") == 'mail-db' ]; then
+if [ "$(echo $ARGS | grep -o 'mail-db')" == 'mail-db' ]; then
   echo "Mail DATABASE";
   read;
   read -p 'Enter Password of mailuser: ' mypassword ;
@@ -136,7 +136,7 @@ fi;
 
 # Postfix Config
 # ===============================
-if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
+if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
   read;
   cp -r ../configs/postfix-conf .;
@@ -154,13 +154,15 @@ if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
     sudo postconf virtual_mailbox_domains=mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf;
     sudo postconf virtual_mailbox_maps=mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf;
     sudo postconf virtual_alias_maps=mysql:/etc/postfix/mysql-virtual-alias-maps.cf,mysql:/etc/postfix/mysql-email2email.cf
+    sudo postconf myhostname=mail.$DOMAIN;
+    #sudo postconf mydestination=mail.$DOMAIN,localhost.localdomain,localhost;
     sudo chgrp postfix /etc/postfix/mysql-*.cf;
     sudo chmod u=rw,g=r,o= /etc/postfix/mysql-*.cf;";
 fi;
 
 # Dovecot Config
 # ===============================
-if [ $(echo $ARGS | grep -o "dovecot-conf") == 'dovecot-conf' ]; then
+if [ "$(echo $ARGS | grep -o 'dovecot-conf')" == 'dovecot-conf' ]; then
   echo "DOVECOT CONFIG";
   read;
   #create seperate user for security reasons
@@ -191,7 +193,7 @@ fi;
 
 # Postfix LMTP communication
 # ===============================
-if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
+if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX LMTP CONFIG";
   read;
   ssh -t $USER@$IP '
@@ -200,7 +202,7 @@ fi;
 
 # Roundcube Config
 # ===============================
-if [ $(echo $ARGS | grep -o "roundcube-conf") == 'roundcube-conf' ]; then
+if [ "$(echo $ARGS | grep -o 'roundcube-conf')" == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
   read;
   cp -r ../configs/roundcube-conf .;
@@ -221,7 +223,7 @@ fi;
 
 # Postfix user Dovecot for authentication for sending mailserver
 # =================================================================
-if [ $(echo $ARGS | grep -o "postfix-conf") == 'postfix-conf' ]; then
+if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX USES DOVECOT CONFIG";
   read;
   ssh -t $USER@$IP '
@@ -238,7 +240,7 @@ fi;
 
 # Fix Debian bug #739738
 # ============================
-if [ $(echo $ARGS | grep -o "debian-bugfix") == 'debian-bugfix' ]; then
+if [ "$(echo $ARGS | grep -o 'debian-bugfix')" == 'debian-bugfix' ]; then
   echo "DEBIAN BUG FIX";
   read;
   ssh -t $USER@$IP '
@@ -247,7 +249,7 @@ fi;
 
 # Enable spamassassin
 # ======================
-if [ $(echo $ARGS | grep -o "spamassassin-enable") == 'spamassassin-enable' ]; then
+if [ "$(echo $ARGS | grep -o 'spamassassin-enable')" == 'spamassassin-enable' ]; then
   echo "ENABLE SPAMASSASSIN";
   read;
 
@@ -272,7 +274,7 @@ fi;
 
 # Mailmanager USER to mysql
 # ==========================
-if [ $(echo $ARGS | grep -o "mailmanager") == 'mailmanager' ]; then
+if [ "$(echo $ARGS | grep -o 'mailmanager')" == 'mailmanager' ]; then
   echo "Mailmanager Mysql user";
   read;
 
@@ -287,7 +289,7 @@ fi;
 
 # AdminScripts to /opt/
 # ==========================
-if [ $(echo $ARGS | grep -o "mailadmin") == 'mailadmin' ]; then
+if [ "$(echo $ARGS | grep -o 'mailadmin')" == 'mailadmin' ]; then
   echo "AdminScripts to /opt/mailadmin"
   read;
 

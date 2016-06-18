@@ -8,7 +8,7 @@ ssh -t $USER@$IP '
   sudo apt-key add - < Release.key;
   sudo echo "deb http://download.owncloud.org/download/repositories/stable/Debian_8.0/ /" >> /etc/apt/sources.list.d/owncloud.list;
   sudo apt-get update;
-  sudo apt-get install owncloud;
+  sudo apt-get -y install owncloud;
   sudo ln -s /usr/share/owncloud/ /var/www/html/owncloud;';
 
 #nginx config for owncloud#

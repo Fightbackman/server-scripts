@@ -6,5 +6,5 @@ IP=$2;
 ssh -t $USER@$IP '
   sudo apt-get update;
   sudo apt-get upgrade;
-  sudo apt-get install fail2ban;'
+  sudo apt-get -y install fail2ban;'
   exit 0;

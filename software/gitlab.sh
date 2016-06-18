@@ -20,9 +20,9 @@ DOMAIN=$3;
 # #add nginx config for gitlab
 
 ssh -t $USER@$IP '
-sudo apt-get install curl openssh-server ca-certificates postfix;
+sudo apt-get -y install curl openssh-server ca-certificates postfix;
 curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash;
-sudo apt-get install gitlab-ce;
+sudo apt-get -y install gitlab-ce;
 sudo gitlab-ctl reconfigure;'; #hier koennten evtl probleme mit dem mailserver auftreten?
 
 cp ../configs/gitlab-conf/gitlab.rb .;

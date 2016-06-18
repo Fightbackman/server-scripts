@@ -7,18 +7,18 @@ DOMAIN=$3;
 ssh -t $USER@$IP '
   sudo apt-get update;
   sudo apt-get upgrade;
-  sudo apt-get install htop;
-  sudo apt-get install nginx;
-  sudo apt-get install php5-fpm;
+  sudo apt-get -y install htop;
+  sudo apt-get -y install nginx;
+  sudo apt-get -y install php5-fpm;
   sudo service nginx start;
   sudo service php5-fpm restart;';
 
 #configure nginx
-sudo cp -r ../configs/nginx-config .;
-sudo rm -rf nginx-config/sites/*;
+cp -r ../configs/nginx-config .;
+rm -rf nginx-config/sites/*;
 
-sudo scp -r nginx-config/ $USER@$IP:~/;
-sudo rm -rf nginx-config;
+scp -r nginx-config/ $USER@$IP:~/;
+rm -rf nginx-config;
 
 ../general-purpose/diffie-hellman.sh $USER $IP;
 
