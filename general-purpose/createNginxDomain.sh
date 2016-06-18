@@ -11,7 +11,7 @@ echo "creating folder $MAINDOMAIN";
 mkdir sites/$MAINDOMAIN;
 
 #if subdomain
-if [ $(echo "$DOMAIN" | grep -o "\." | wc -l) -gt 1 ]; then
+if [ "$(echo "$DOMAIN" | grep -o "\." | wc -l)" -gt 1 ]; then
   if [ $WWWPATH == 'owncloud' ];then
     cp ../configs/nginx-config/sites/site.de/owncloud.site.de sites/$MAINDOMAIN/$DOMAIN;
     sed -i.bak s/owncloud.site.de/$DOMAIN/g sites/$MAINDOMAIN/$DOMAIN; #change servername etc.
@@ -49,3 +49,5 @@ ssh -t $USER@$IP "
   rm -rf $MAINDOMAIN;";
 
 rm -rf sites;
+
+exit 0;

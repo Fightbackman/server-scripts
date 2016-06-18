@@ -38,3 +38,4 @@ sudo mv gitlab.rb /etc/gitlab/;
 sudo gitlab-ctl reconfigure;';
 
 ../general-purpose/createNginxDomain.sh $USER $IP $DOMAIN gitlab;
+exit 0;

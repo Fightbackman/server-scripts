@@ -19,3 +19,4 @@ ssh -t $USER@$IP '
     systemctl enable teamspeak3.service;
     systemctl start teamspeak3.service';
     #last command ist to start the server
+exit 0;

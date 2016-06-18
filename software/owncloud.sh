@@ -24,5 +24,5 @@ echo \"FLUSH PRIVILEGES;\" >> create.sql;
 mysql -u root -p < create.sql;
 rm create.sql;
 "
-
+exit 0;
 #open browser and configure

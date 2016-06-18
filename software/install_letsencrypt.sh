@@ -12,3 +12,4 @@ ssh -t $USER@$IP '
   sudo mkdir /etc/letsencrypt;
   sudo mkdir /etc/letsencrypt/configs/;
   sudo chown -R root:root /etc/letsencrypt;'
+exit 0;

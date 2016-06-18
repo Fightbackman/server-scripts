@@ -301,3 +301,4 @@ if [ "$(echo $ARGS | grep -o 'mailadmin')" == 'mailadmin' ]; then
 fi;
 
 echo "fertig";
+exit 0;

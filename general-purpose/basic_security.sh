@@ -12,3 +12,4 @@ echo "going to disable root loging witout password if not allready done"
 #ssh -t $USER@$IP '
 #
 #'
+exit 0;

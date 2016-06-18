@@ -12,3 +12,5 @@ ssh -t $USER@$IP "
   sudo mkdir /home/$newUser/web;
   sudo chown $newUser:$newUser /home/$newUser/web;
   sudo ln -s /home/$newUser/web /var/www/html/$DOMAIN;"
+
+exit 0;
