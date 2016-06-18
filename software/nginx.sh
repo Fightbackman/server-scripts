@@ -7,9 +7,9 @@ DOMAIN=$3;
 ssh -t $USER@$IP '
   sudo apt-get update;
   sudo apt-get upgrade;
-  sudo apt-get install htop;
-  sudo apt-get install nginx;
-  sudo apt-get install php5-fpm;
+  sudo apt-get -y install htop;
+  sudo apt-get -y install nginx;
+  sudo apt-get -y install php5-fpm;
   sudo service nginx start;
   sudo service php5-fpm restart;';
 

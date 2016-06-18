@@ -56,7 +56,7 @@ if [ "$(echo $ARGS | grep -o 'spamassassin-bin')" == 'spamassassin-bin' ]; then
   echo "spamassassin";
   read;
   ssh -t $USER@$IP '
-    sudo apt-get install spamassassin spamass-milter;';
+    sudo apt-get -y install spamassassin spamass-milter;';
 fi;
 
 # Dovecot
@@ -65,7 +65,7 @@ if [ "$(echo $ARGS | grep -o 'dovecot-bin')" == 'dovecot-bin' ]; then
   echo "DOVECOT";
   read;
   ssh -t $USER@$IP '
-    sudo apt-get install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
+    sudo apt-get -y install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
 fi;
 
 
@@ -76,11 +76,11 @@ if [ "$(echo $ARGS | grep -o 'roundcube-bin')" == 'roundcube-bin' ]; then
   read;
   ssh -t $USER@$IP '
     sudo su -c "echo \"deb http://http.debian.net/debian jessie-backports main\" > /etc/apt/sources.list.d/jessie-backports.list";
-    sudo apt-get update;
-    sudo apt-get install roundcube roundcube-plugins;
+    sudo apt-get -y update;
+    sudo apt-get -y install roundcube roundcube-plugins;
     sudo service apache2 stop;
-    sudo apt-get purge apache2;
-    sudo apt-get autoremove;';
+    sudo apt-get -y purge apache2;
+    sudo apt-get -y autoremove;';
 fi;
 
 # phpmyadmin
@@ -89,7 +89,7 @@ if [ "$(echo $ARGS | grep -o 'phpmyadmin')" == 'phpmyadmin' ]; then
   echo "phpmyadmin";
   read;
   ssh -t $USER@$IP '
-    sudo apt-get install phpmyadmin;
+    sudo apt-get -y install phpmyadmin;
     sudo ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin;
   ';
 fi;
