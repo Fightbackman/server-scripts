@@ -14,6 +14,7 @@ sudo cp ../../configs/letsencrypt/letsencrypt-sample.ini /etc/letsencrypt/config
 sudo chown root:root /etc/letsencrypt/configs/$config_file;
 sed "16s/$/ $newdomain/" $config_file > $config_file.tmp
 mv $config_file.tmp $config_file
+find /etc/letsencrypt/configs -type f -exec sudo chmod 644 {} \;;
 ./order_domain.sh $configname $newdomain $web_service;
 echo "If you want to add additional domains to the new config use apend_domaind.sh"
 exit 0;
