@@ -21,7 +21,6 @@ fi;
 # ===================
 if [ "$(echo $ARGS | grep -o 'letsencrypt')" == 'letsencrypt' ]; then
   echo "letsencrypt";
-  read;
   ../software/install_letsencrypt.sh $USER $IP;
 fi;
 
@@ -30,7 +29,6 @@ fi;
 
 if [ "$(echo $ARGS | grep -o 'nginx')" == 'nginx' ]; then
   echo "NGINX";
-  read;
   ../software/nginx.sh $USER $IP $DOMAIN;
 fi;
 
@@ -38,7 +36,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'mysql-server')" == 'mysql-server' ]; then
   echo "MYSQL";
-  read;
   ../software/mysql-server.sh $USER $IP;
 fi;
 
@@ -46,7 +43,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'postfix-bin')" == 'postfix-bin' ]; then
   echo "POSTFIX";
-  read;
   ../software/postfix.sh $USER $IP;
 fi;
 
@@ -54,7 +50,6 @@ fi;
 # ============================
 if [ "$(echo $ARGS | grep -o 'spamassassin-bin')" == 'spamassassin-bin' ]; then
   echo "spamassassin";
-  read;
   ssh -t $USER@$IP '
     sudo apt-get -y install spamassassin spamass-milter;';
 fi;
@@ -63,7 +58,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'dovecot-bin')" == 'dovecot-bin' ]; then
   echo "DOVECOT";
-  read;
   ssh -t $USER@$IP '
     sudo apt-get -y install dovecot-mysql dovecot-pop3d dovecot-imapd dovecot-managesieved dovecot-lmtpd;';
 fi;
@@ -73,7 +67,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'roundcube-bin')" == 'roundcube-bin' ]; then
   echo "ROUNDCUBE this will harm your apache2!!!";
-  read;
   ssh -t $USER@$IP '
     sudo su -c "echo \"deb http://http.debian.net/debian jessie-backports main\" > /etc/apt/sources.list.d/jessie-backports.list";
     sudo apt-get -y update;
@@ -87,7 +80,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'phpmyadmin')" == 'phpmyadmin' ]; then
   echo "phpmyadmin";
-  read;
   ssh -t $USER@$IP '
     sudo apt-get -y install phpmyadmin;
     sudo ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin;
@@ -98,7 +90,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'mail-db')" == 'mail-db' ]; then
   echo "Mail DATABASE";
-  read;
   read -p 'Enter Password of mailuser: ' mypassword ;
   echo 'CREATE DATABASE mailserver;' > create.sql;
   echo "GRANT SELECT,INSERT,UPDATE,DELETE ON mailserver.* TO 'mailuser'@'127.0.0.1' IDENTIFIED BY '$mypassword';" >> create.sql;
@@ -138,7 +129,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX CONFIG";
-  read;
   cp -r ../configs/postfix-conf .;
   #substitute passwords
   read -p 'Enter Password of mailuser: ' mypassword ;
@@ -164,7 +154,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'dovecot-conf')" == 'dovecot-conf' ]; then
   echo "DOVECOT CONFIG";
-  read;
   #create seperate user for security reasons
   ssh -t $USER@$IP '
     sudo groupadd -g 5000 vmail;
@@ -195,7 +184,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX LMTP CONFIG";
-  read;
   ssh -t $USER@$IP '
     sudo postconf virtual_transport=lmtp:unix:private/dovecot-lmtp;'
 fi;
@@ -204,7 +192,6 @@ fi;
 # ===============================
 if [ "$(echo $ARGS | grep -o 'roundcube-conf')" == 'roundcube-conf' ]; then
   echo "ROUNDCUBE CONFIG";
-  read;
   cp -r ../configs/roundcube-conf .;
   read -p 'Enter Password of mailuser: ' mypassword ;
   sed -i.bak -e "s/ChangeMe/$mypassword/g" roundcube-conf/plugins/password/config.inc.php;
@@ -225,7 +212,6 @@ fi;
 # =================================================================
 if [ "$(echo $ARGS | grep -o 'postfix-conf')" == 'postfix-conf' ]; then
   echo "POSTFIX USES DOVECOT CONFIG";
-  read;
   ssh -t $USER@$IP '
     sudo postconf smtpd_sasl_type=dovecot;
     sudo postconf smtpd_sasl_path=private/auth;
@@ -242,7 +228,6 @@ fi;
 # ============================
 if [ "$(echo $ARGS | grep -o 'debian-bugfix')" == 'debian-bugfix' ]; then
   echo "DEBIAN BUG FIX";
-  read;
   ssh -t $USER@$IP '
     sudo sed -i -e "s/return if !defined $_[0];/return undef if !defined $_[0];/g" /usr/share/perl5/Mail/SpamAssassin/Util.pm;';
 fi;
@@ -251,7 +236,6 @@ fi;
 # ======================
 if [ "$(echo $ARGS | grep -o 'spamassassin-enable')" == 'spamassassin-enable' ]; then
   echo "ENABLE SPAMASSASSIN";
-  read;
 
   ssh -t $USER@$IP "
     sudo postconf smtpd_milters=unix:/spamass/spamass.sock;
@@ -276,8 +260,6 @@ fi;
 # ==========================
 if [ "$(echo $ARGS | grep -o 'mailmanager')" == 'mailmanager' ]; then
   echo "Mailmanager Mysql user";
-  read;
-
   read -p "Define mailmanager password: " PASSWORD;
   echo "CREATE USER 'mailmanager'@'localhost' IDENTIFIED BY '$PASSWORD';" > query.sql;
   echo "GRANT ALL PRIVILEGES ON mailserver.* TO 'mailmanager'@'localhost';" >> query.sql;
@@ -291,7 +273,6 @@ fi;
 # ==========================
 if [ "$(echo $ARGS | grep -o 'mailadmin')" == 'mailadmin' ]; then
   echo "AdminScripts to /opt/mailadmin"
-  read;
 
   scp -r admin $IP:~;
   ssh -t $USER@$IP '
