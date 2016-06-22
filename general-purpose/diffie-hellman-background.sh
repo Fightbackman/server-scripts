@@ -5,3 +5,5 @@ sudo openssl dhparam -out dhparams.pem 4096;
 sudo rm ~/diffie-hellman-background.sh;
 sudo cp dhparams.pem /etc/nginx/
 sudo service nginx restart;
+
+exit 0;

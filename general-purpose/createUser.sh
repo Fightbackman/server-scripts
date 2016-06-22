@@ -15,3 +15,4 @@ ssh-copy-id $USER@$IP;
 scp ~/.bash_profile $USER@$IP:~/;
 scp ~/.bash_prompt $USER@$IP:~/;
 scp ~/.aliases $USER@$IP:~/;
+exit 0;

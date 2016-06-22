@@ -8,11 +8,11 @@ pidof systemd && echo "systemd" || echo "other" 2>&1
 ' >./out.txt;
 init="systemd"
 echo $init;
-if [ init == "systemd" ]; then
+if [ $init == "systemd" ]; then
   {
     exit 1;
   }
-elif [ init == "other" ]; then
+elif [ $init == "other" ]; then
   {
     exit 2;
   }

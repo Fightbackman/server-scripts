@@ -5,3 +5,4 @@ IP=$2;
 ssh -t $USER@$IP '
   sudo apt-get -y install python;
   sudo apt-get -y install python3;';
+exit 0;

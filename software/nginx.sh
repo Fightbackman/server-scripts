@@ -41,3 +41,4 @@ ssh -t $USER@$IP "
 
 # error because dhmparams is not in place (of course)
 # ssh -t $USER@$IP 'sudo service nginx start';
+exit 0;
