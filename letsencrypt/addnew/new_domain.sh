@@ -10,8 +10,8 @@ if [ -f $config_file ]; then
 fi
 echo "The Used config file is: $config_file"
 echo "Creating new domainconfig."
-sudo cp ../../configs/letsencrypt/letsencrypt-sample.ini /etc/letsencrypt/configs/$config_file;
-sudo chown root:root /etc/letsencrypt/configs/$config_file;
+sudo cp ../../configs/letsencrypt/letsencrypt-sample.ini $config_file;
+sudo chown root:root $config_file;
 sed "16s/$/ $newdomain/" $config_file > $config_file.tmp
 mv $config_file.tmp $config_file
 find /etc/letsencrypt/configs -type f -exec sudo chmod 644 {} \;;
