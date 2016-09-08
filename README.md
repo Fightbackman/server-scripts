@@ -33,8 +33,16 @@ This directory contains the config of Roundcube Webmailer.
 Installs iptables and fail2ban. Deactivate passwort login for root or all users.
 ### calcHash.py
 This works as a library for calculating Hashes for files or directories.
-
+### getGitPriv.sh
+This scripts allows you to download files from a private Github repository.(needs auth token)
+### check_init.sh (TODO)
+Checks if init.d oder systemd is used
+### diffie-hellman.sh
+Creates an diffie-hellman key for nginx
 ###
+
+## hetzner(TODO)
+This folder contains scripts to work with the domain registration robot and the server robot from the server hosting company "Hetzner"
 
 ## letsencrypt
 The letsencrypt scripts are splitted into two parts. One part is used to add new domains to an existing config. This one is called addnew. The other one is called autorenew and is used to automaticly renew certificates if they have less then 30 days left.
