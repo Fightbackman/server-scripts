@@ -5,7 +5,7 @@ Warning. We expect systemd ruunning on your system, if you want to use these scr
 All scripts are tested with Debian Jessie.
 Support for init.d maybe come with the future or if you help us to improve our scripts for using that.
 
-# List of current storred scripts:
+# List of current stored scripts:
 ### Format: Scriptname: Short discription
 
 ## Backup
@@ -37,7 +37,23 @@ This works as a library for calculating Hashes for files or directories.
 ###
 
 ## letsencrypt
+The letsencrypt scripts are splitted into two parts. One part is used to add new domains to an existing config. This one is called addnew. The other one is called autorenew and is used to automaticly renew certificates if they have less then 30 days left.
 
 ## mailserver
+The mailserver scripts deploy a full working mail server with dovecot and postfix.
+Mysql is used as user backend and gets managed by phpmyadmin running on an nginx.
+As fronted Roundcube will be used. The mailserver automatically receives certificates from letsencrypt. Each compenen could be selected like you want. There are also management scripts to administrate the mailserver.
 
 ## software
+This category bundles a bunch of single scripts to install specific software needed from other scripts or is just a nice to have.
+- docker
+- fail2ban
+- gitlab
+- letsencrypt
+- iptables
+- Mysql
+- nginx
+- owncloud
+- Postfix
+- python
+- teamspeak
