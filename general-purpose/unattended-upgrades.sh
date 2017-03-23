@@ -1,6 +1,7 @@
 #!/bin/bash
+#Needs sudo without passwd
 USER=$1; IP=$2; ssh -t $USER@$IP << EOF
-sudo apt install unattended-upgrades;
+sudo apt -y install unattended-upgrades;
 sudo sed -i '71 s/^.//' /etc/apt/apt.conf.d/50unattended-upgrades;
 sudo sed -i '71 s/^.//' /etc/apt/apt.conf.d/50unattended-upgrades;
 sudo touch /etc/apt/apt.conf.d/20auto-upgrades;
